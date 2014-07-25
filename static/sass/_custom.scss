@@ -10,8 +10,20 @@
 //-----------------
 
 //Cardinal Color Variables
+
+//Altough these names correspond to the especific colcor,
+//we have changed their values in order to visualize where
+//they are being used ;)
+
+//Now it is orange ( it is used in the button color 1)
 $cardinal-red: #fdb813; //Button color 1
-$dark-red: #820000; //Link Color
+
+//Now it is a darker orange
+//*** It is used in the color of the button when the user hover the mouse on it.
+//$dark-red: #820000; //Link Color
+$dark-red: #d89d13; //Link Color
+
+
 $cardinal-light: #c83737; //Selected Header BG Color, ie. calendar        ***Custom, not from palette***
 $cardinal-bg: #8CC63F; //Selected Content BG Color, ie. calendar          ***Custom, not from palette***
 
