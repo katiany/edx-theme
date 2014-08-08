@@ -38,7 +38,20 @@ $white: $gray-1;
 $black: #2e2d29;
 $black-80: #585754;
 
+//Blue Color Variables
+$dark-blue: #0d1e40;
+$almost-dark-blue: #1c2c4d;
+$blue: #2b3b5c;
+$light-blue2: #3a4969;
+$light-blue3: #4a5978;
+$light-blue: #becde6;
 
+
+//Green Color Variables
+$dark-green: #326300;
+$green: #6ba339;
+$light-green: #96c765;
+$light-green2: #d3ffa3;
 
 //-----------------
 //  Font Assignment
@@ -93,7 +106,7 @@ $header-graphic-sub-color: $lighter-base-font-color;
 $header-link-color: $dark-red;
 $header-link-hover: $cardinal-light;
 
-$button-color: $cardinal-red;
+$button-color: $green;
 $button-archive-color: $gray-3;
 
 $shadow-color: $gray;
@@ -104,7 +117,7 @@ $button-bg-color: $gray-3;
 $button-bg-hover-color: $gray-1;
 
 // actions - primary
-$action-primary-bg: $cardinal-red;
+$action-primary-bg: $green;
 $action-primary-fg: $gray-2;
 $action-primary-shadow: none;
 
