@@ -18,10 +18,7 @@
   </div>
 </%block>
 
-## TODO: this will eventually be moved to the Sass
-<%block name="navigation_logo">
-  <img src="${static.url('http://imagizer.imageshack.us/v2/150x100q90/539/qnppMw.jpg')}" height="35" alt="${_('{platform_name}, Courses List').format(platform_name='Big Data University')}" />
-</%block>
+
 
 ## We don't want extra links inside the navigation dropdown
 <%block name="navigation_dropdown_menu_links" />
@@ -45,6 +42,13 @@
   </li>
 </%block>
 
+## TODO: this will eventually be moved to the Sass
+<%block name="navigation_logo">
+  <img src="${static.url('http://imagizer.imageshack.us/v2/150x100q90/539/qnppMw.jpg')}" height="35" alt="${_('{platform_name}, Courses List').format(platform_name='Big Data University')}" />
+</%block>
+
+
+
 ## When authenticated, show both the about page and find courses
 <%block name="navigation_global_links_authenticated">
   <li class="nav-global-01">
@@ -54,4 +58,6 @@
     <a href="${marketing_link('COURSES')}">${_('Find Courses')}</a>
   </li>
 </%block>
+
+
 
