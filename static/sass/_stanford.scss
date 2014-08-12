@@ -95,15 +95,15 @@ $base-font-color: $black;
 $lighter-base-font-color: $black-80;
 $very-light-text: $gray-1;
 
-$link-color: $dark-red;
-$link-color-d1: $dark-red;
-$link-hover: $cardinal-light;
+$link-color: $green;
+$link-color-d1: $light-green;
+$link-hover: $light-green2;
 $site-status-color: $cardinal-bg;
 
-$header-graphic-super-color: $dark-red;
+$header-graphic-super-color: $dark-green;
 $header-graphic-sub-color: $lighter-base-font-color;
 
-$header-link-color: $dark-red;
+$header-link-color: $dark-green;
 $header-link-hover: $cardinal-light;
 
 $button-color: $green;
@@ -122,11 +122,11 @@ $action-primary-fg: $gray-2;
 $action-primary-shadow: none;
 
 // focused - hover/active pseudo states
-$action-primary-focused-bg: $dark-red;
+$action-primary-focused-bg: $dark-green;
 $action-primary-focused-fg: $gray-1;
 
 // current or active navigation item
-$action-primary-active-bg: $dark-red;
+$action-primary-active-bg: $dark-green;
 $action-primary-active-fg: $gray-1;
 $action-primary-active-shadow: none;
 $action-primary-active-focused-fg: $gray-2;
