@@ -1,207 +1,377 @@
-## mako
-<%!
-  from django.core.urlresolvers import reverse
-  from django.utils.translation import ugettext as _
-%>
-<%namespace name='static' file='/static_content.html'/>
+<%! from django.utils.translation import ugettext as _ %>
+<%! from microsite_configuration import microsite %>
 
-<%inherit file="/main.html" />
+<%inherit file="main.html" />
 
-<%block name="title"><title>${_('About {PLATFORM_NAME}').format(PLATFORM_NAME=PLATFORM_NAME)}</title></%block>
+<%namespace name='static' file='static_content.html'/>
+<%namespace file='main.html' import="login_query"/>
+
+<%! from django.core.urlresolvers import reverse %>
+<%! from django.utils import html %>
+<%! from django_countries.countries import COUNTRIES %>
+<%! from django.utils.translation import ugettext as _ %>
+<%! from student.models import UserProfile %>
+<%! from datetime import date %>
+<%! from third_party_auth import pipeline, provider %>
+<%! import calendar %>
+
+<%block name="pagetitle">${_("Register for {platform_name}").format(platform_name=platform_name)}</%block>
+
+<%block name="bodyclass">view-register</%block>
 
 <%block name="js_extra">
   <script type="text/javascript">
     $(function() {
-      $('section.message').hide();
-      $('#about-menu a').removeClass('active');
-      window.scrollTo(0,0);
-      
-      if ( document.location.href.indexOf('#faq') > -1 ) {
-        $('section#faq').show();
-        $('#about-menu a.faq').addClass('active');
-      } else if ( document.location.href.indexOf('#contact') > -1 ) {
-        $('section#contact').show();
-        $('#about-menu a.contact').addClass('active');
-      } else if ( document.location.href.indexOf('#careers') > -1 ) {
-        $('section#careers').show();
-        $('#about-menu a.careers').addClass('active');
-      } else {
-        $('section#about').show();
-        $('#about-menu a.about').addClass('active');
-      }
-      
-      $('#about-menu a').click(function(event) {
-        event.preventDefault();
-        $('#about-menu a').removeClass('active');
-        $(this).addClass('active');
-        var clickId = "section" + $(this).attr('href');
-        $('section.message').hide();
-        $(clickId).show();
+
+      // adding js class for styling with accessibility in mind
+      $('body').addClass('js');
+
+      // new window/tab opening
+      $('a[rel="external"], a[class="new-vp"]')
+      .click( function() {
+      window.open( $(this).attr('href') );
+      return false;
       });
+
+      // form field label styling on focus
+      $("form :input").focus(function() {
+        $("label[for='" + this.id + "']").parent().addClass("is-focused");
+      }).blur(function() {
+        $("label").parent().removeClass("is-focused");
+      });
+
     });
+
+    (function() {
+      toggleSubmitButton(true);
+
+      $('#register-form').on('submit', function() {
+        toggleSubmitButton(false);
+      });
+
+      $('#register-form').on('ajax:error', function() {
+        toggleSubmitButton(true);
+      });
+
+      $('#register-form').on('ajax:success', function(event, json, xhr) {
+        var url = json.redirect_url || "${reverse('dashboard')}";
+        location.href = appendParameter(url, "signin", "initial");
+      });
+
+      $('#register-form').on('ajax:error', function(event, jqXHR, textStatus) {
+        toggleSubmitButton(true);
+        json = $.parseJSON(jqXHR.responseText);
+        $('.status.message.submission-error').addClass('is-shown').focus();
+        $('.status.message.submission-error .message-copy').html(json.value).stop().css("display", "block");
+        $(".field-error").removeClass('field-error');
+        $("[data-field='"+json.field+"']").addClass('field-error')
+      });
+    })(this);
+
+    function thirdPartySignin(event, url) {
+      event.preventDefault();
+      window.location.href = url;
+    }
+
+    function toggleSubmitButton(enable) {
+      var $submitButton = $('form .form-actions #submit');
+
+      if(enable) {
+        $submitButton.
+          removeClass('is-disabled').
+          removeProp('disabled').
+          html("${_('Create My {platform_name} Account').format(platform_name=platform_name)}");
+      }
+      else {
+        $submitButton.
+          addClass('is-disabled').
+          prop('disabled', true).
+          text("${_(u'Processing your account information…')}");
+      }
+    }
   </script>
 </%block>
 
-<section class="container about" style="width: auto;">
-  <nav id="about-menu">
-    <a href="#about" class="about active">${_('About')}</a>
-    <a href="#faq" class="faq">${_('Faq')}</a>
-    <a href="#careers" class="careers">${_('Careers')}</a>
-    <a href="#contact" class="contact">${_('Contact')}</a>
-  </nav>
+<section class="introduction">
+  <header>
+    <h1 class="title">
+      <span class="title-super">${_("Welcome!")}</span>
+      <span class="title-sub">${_("Register below to create your {platform_name} account").format(platform_name=platform_name)}</span>
+    </h1>
+  </header>
+</section>
 
-  <section class="vision">
+<section class="register container">
+  <section role="main" class="content">
+    <form role="form" id="register-form" method="post" data-remote="true" action="/create_account" novalidate>
+      <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
 
-## About Section ##
-    <section class="message left" id="about">
-      <div class="photo">
-        <img src="${static.url('themes/stanford/images/quad.jpg')}" alt="${_('Stanford Quad with Hoover Tower')}" />
-          <!-- Image Copyright owned by Giulio Gratta -->
+      <!-- status messages -->
+      <div role="alert" class="status message">
+        <h3 class="message-title">${_("We're sorry, {platform_name} enrollment is not available in your region").format(platform_name=platform_name)}</h3>
       </div>
-      <article>
-        <h2>${_('About')} <span class="edx">Stanford Online</span></h2>
-        
-        <p>${_('{Stanford} is developing new online course material in order to improve on-campus courses and provide broader public access to exciting learning opportunities.').format(Stanford="Stanford")}</p>
-        <p>${_("The engineering team at Stanford's Office of the Vice Provost for Online Learning is running and developing on an instance of the {platform_link_start}OpenEdX platform{link_end}. More details are in {details_link_start}this article{link_end}.").format(
-            platform_link_start='<a href="http://code.edx.org">',
-            details_link_start='<a href="http://news.stanford.edu/news/2013/june/open-source-platform-061113.html">',
-            link_end='</a>'
-          )}
-        </p>
-      </article>
-      <hr class="fade-right-hr-divider">
-    </section>
 
-
-## FAQ Section ##
-    <section class="message left" id="faq">
-      <div class="photo">
-        <img src="${static.url('themes/stanford/images/memchu.jpg')}" alt="${_('Stanford Memorial Church Facade')}" />
-          <!-- Image Copyright owned by Giulio Gratta -->
+      <div role="alert" class="status message submission-error" tabindex="-1">
+        <h3 class="message-title">${_("The following errors occurred while processing your registration:")} </h3>
+        <ul class="message-copy"> </ul>
       </div>
-      <article>
-        <h2>${_('FAQs')}</h2>
-        <p><strong>${_('Has {Stanford} joined the {edX} consortium?').format(Stanford="Stanford", edX="edX")}</strong><br />
-        ${_("No.  We're partnering on the open source software.")}</p>
-        
-        <p><strong>${_('What browsers are recommended for use with {platform_name}?').format(platform_name='Stanford OpenEdX')}</strong><br />
-        ${_('The latest versions of {chrome_link}, {firefox_link}, and {safari_link}. (The site is currently not optimized for mobile use.)').format(
-            chrome_link='<a href="http://chrome.google.com/">Google Chrome</a>',
-            firefox_link='<a href="http://www.mozilla.org/firefox">Mozilla Firefox</a>',
-            safari_link='<a href="http://www.apple.com/safari/">Apple Safari</a>'
-          )}
+
+      % if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH'):
+
+        % if not running_pipeline:
+
+        <p class="instructions">
+          ${_("Register to start learning today!")}
         </p>
 
-        <p><strong>${_("If I'm a {Stanford} faculty member, and I'd like to use the platform to host content for an on-campus or public course, who should I get in touch with?").format(Stanford="Stanford")}</strong><br />
-        <a href="mailto:courseops@class.stanford.edu">${_('Click here to get in touch')}</a></p>
+        <div class="form-actions form-third-party-auth">
 
-        <p><strong>${_("If I'm at another university, and I'd like to find out about using the open source platform, who should I get in touch with?")}</strong><br />
-        <a href="mailto:techsupport@class.stanford.edu">${_('Click here to get in touch')}</a></p>
-      </article>
-      <hr class="fade-right-hr-divider">
-    </section>
+        % for enabled in provider.Registry.enabled():
+          ## Translators: provider_name is the name of an external, third-party user authentication service (like Google or LinkedIn).
+          <button type="submit" class="button button-primary" onclick="thirdPartySignin(event, '${pipeline.get_login_url(enabled.NAME, pipeline.AUTH_ENTRY_REGISTER)}');"><span class="icon ${enabled.ICON_CLASS}"></span>${_('Sign in with {provider_name}').format(provider_name=enabled.NAME)}</button>
+        % endfor
 
+        </div>
 
-## Careers Section ##
-    <section class="message left" id="careers">
-      <div class="photo">
-        <img src="${static.url('themes/stanford/images/tree-light.jpg')}" alt="${_('Stanford Quad with Hoover Tower')}" />
-          <!-- Image Copyright owned by Giulio Gratta -->
+        <p class="instructions">
+          ${_('or create your own {platform_name} account by completing all <strong>required*</strong> fields below.').format(platform_name=platform_name)}
+        </p>
+
+        % else:
+
+        <p class="instructions">
+          ## Translators: selected_provider is the name of an external, third-party user authentication service (like Google or LinkedIn).
+          ${_("You've successfully signed in with {selected_provider}.").format(selected_provider='<strong>%s</strong>' % selected_provider)}<br />
+          ${_("Finish your account registration below to start learning.")}
+        </p>
+
+        % endif
+
+      % else:
+
+      <p class="instructions">
+        ${_("Please complete the following fields to register for an account. ")}<br />
+        ${_('Required fields are noted by <strong class="indicator">bold text and an asterisk (*)</strong>.')}
+      </p>
+
+      % endif
+
+      <div class="group group-form group-form-requiredinformation">
+        <h2 class="sr">${_('Required Information')}</h2>
+
+        % if has_extauth_info is UNDEFINED:
+
+        <ol class="list-input">
+          <li class="field required text" id="field-email">
+            <label for="email">${_('E-mail')}</label>
+            <input class="" id="email" type="email" name="email" value="${email}" placeholder="${_('example: username@domain.com')}" required aria-required="true" />
+          </li>
+
+          <li class="field required text" id="field-name">
+            <label for="name">${_('Full Name')}</label>
+            <input id="name" type="text" name="name" value="${name}" placeholder="${_('example: Jane Doe')}" required aria-required="true" aria-describedby="name-tip" />
+            <span class="tip tip-input" id="name-tip">${_("Needed for any certificates you may earn")}</span>
+          </li>
+          <li class="field required text" id="field-username">
+            <label for="username">${_('Public Username')}</label>
+            <input id="username" type="text" name="username" value="${username}" placeholder="${_('example: JaneDoe')}" required aria-required="true" aria-describedby="username-tip"/>
+            <span class="tip tip-input" id="username-tip">${_('Will be shown in any discussions or forums you participate in')} <strong>(${_('cannot be changed later')})</strong></span>
+          </li>
+
+          % if settings.FEATURES.get('ENABLE_THIRD_PARTY_AUTH') and running_pipeline:
+
+          <li class="is-disabled field optional password" id="field-password" hidden>
+            <label for="password">${_('Password')}</label>
+            <input id="password" type="password" name="password" value="" disabled required aria-required="true" />
+          </li>
+
+          % else:
+
+          <li class="field required password" id="field-password">
+            <label for="password">${_('Password')}</label>
+            <input id="password" type="password" name="password" value="" required aria-required="true" />
+          </li>
+
+          % endif
+        </ol>
+
+        % else:
+
+        <div class="message">
+          <h3 class="message-title">${_("Welcome {username}").format(username=extauth_id)}</h3>
+          <p class="message-copy">${_("Enter a Public Display Name:")}</p>
+        </div>
+
+        <ol class="list-input">
+
+          % if ask_for_email:
+
+          <li class="field required text" id="field-email">
+            <label for="email">${_("E-mail")}</label>
+            <input class="" id="email" type="email" name="email" value="" placeholder="${_('example: username@domain.com')}" />
+          </li>
+
+          % endif
+
+          <li class="field required text" id="field-username">
+            <label for="username">${_('Public Display Name')}</label>
+            <input id="username" type="text" name="username" value="${extauth_username}" placeholder="${_('example: JaneDoe')}" required aria-required="true" aria-describedby="username-tip" />
+            <span class="tip tip-input" id="id="username-tip>${_('Will be shown in any discussions or forums you participate in')} <strong>(${_('cannot be changed later')})</strong></span>
+          </li>
+
+          % if ask_for_fullname:
+
+          <li class="field required text" id="field-name">
+            <label for="name">${_('Full Name')}</label>
+            <input id="name" type="text" name="name" value="" placeholder="$_('example: Jane Doe')}" aria-describedby="name-tip" />
+            <span class="tip tip-input" id="name-tip">${_("Needed for any certificates you may earn")}</span>
+          </li>
+
+          % endif
+
+        </ol>
+
+        % endif
       </div>
-      <article>
-        <h2>${_('Careers')}</h2>
-        <p>
-          Technology is disrupting higher education.  We believe universities can benefit from this if it's done right.  Supporting basic education and computer science research is core to what we do.  We also believe that universities should be in control of how this space evolves, and that an open-source platform is the best way to do that.
-        </p>
-        <p>
-          Our engineering team is small and productive: five engineers, one PM, and two course ops staff.  We do our own operations and QA.  We install several times per week.  We like being close to our customers (faculty, staff, students) since that motivates the right kind of innovation.  We run a lightweight, mostly-Agile development process with quick daily standups, group planning, and frequent demos.  We work on the Stanford Campus.
-        </p>
-        <p>
-          What we work on is mostly driven by our customers, but we also commit to the core edX platform repo.  We collaborate with other OpenEdX adopters, including Google.
-        </p>
-        
-        <p>&nbsp;</p>
 
+      <div class="group group-form group-form-secondary group-form-personalinformation">
+        <h2 class="sr">${_("Extra Personal Information")}</h2>
 
-        <h3><strong>Software Engineer</strong>, Office of the Vice Provost for Online Learning<br /><br /></h3>
-        <p>
-          We are hiring an engineer to join Stanford Online's Platform team.  Stanford has the best, the biggest, and the most on-line courses on the Internet.  This team builds and operates the open-source platform behind many of them.  Students on-campus and worldwide learn via our course materials and the online communities they create.
-        </p>
-        <p>
-          Our technical stack is modern and sane:<br />
-          - Python/Django, Nginx, Celery<br />
-          - CSS/SASS, JS/jQuery/CoffeeScript<br />
-          - Relational (MySQL) and nosql (MongoDB) storage<br />
-          - Cloud hosted at Amazon: EC2, RDS, S3, ElasticCache<br />
-          - Jenkins, Gerrit, and Ansible
-        </p>
-        <p>
-          As an engineer on this team you'd be expected to work across the stack as needed.  We are looking for generalists.  If you are an engineer who sees technical variety and learning as fun challenges, then join us.
-        </p>
-        <p>
-          This is a two year fixed term position (100% FTE). The job is on the Stanford Campus, ie. being remote full-time isn't an option.  You'll need to successfully pass a background check and show you are eligible to work in the US before coming on board.
-        </p>
-        <p>
-          <a href="https://stanford.taleo.net/careersection/2/jobdetail.ftl?job=62804" style="font-size: 1.25em;padding: 5px;background-color: #820000;color: white;border-radius: 5px;">
-            Apply Now
-          </a>
-        </p>
-        
-        <p>&nbsp;</p>
-      </article>
-      <hr class="fade-right-hr-divider">
-    </section>
-
-
-## Contact Section ##
-    <section class="message left" id="contact">
-      <div class="photo">
-        <img src="${static.url('themes/stanford/images/dish.jpg')}" alt="${_('Stanford Dish by Twilight')}" />
-          <!-- Image Copyright owned by Stanford University -->
+        <ol class="list-input">
+          % if settings.REGISTRATION_EXTRA_FIELDS['city'] != 'hidden':
+          <li class="field ${settings.REGISTRATION_EXTRA_FIELDS['city']} text" id="field-city">
+            <label for="city">${_('City')}</label>
+            <input id="city" type="text" name="city" value="" placeholder="${_('example: New York')}" aria-describedby="city-tip" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['city'] == 'required' else ''} />
+          </li>
+          % endif
+          % if settings.REGISTRATION_EXTRA_FIELDS['country'] != 'hidden':
+          <li class="field-group">
+          <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['country']} select" id="field-country">
+              <label for="country">${_("Country")}</label>
+              <select id="country" name="country" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['country'] == 'required' else ''}>
+                <option value="">--</option>
+                %for code, country_name in COUNTRIES:
+                <option value="${code}">${ unicode(country_name) }</option>
+                %endfor
+              </select>
+            </div>
+          </li>
+          % endif
+          % if settings.REGISTRATION_EXTRA_FIELDS['level_of_education'] != 'hidden':
+          <li class="field-group">
+          <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['level_of_education']} select" id="field-education-level">
+              <label for="education-level">${_("Highest Level of Education Completed")}</label>
+              <select id="education-level" name="level_of_education" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['level_of_education'] == 'required' else ''}>
+                <option value="">--</option>
+                %for code, ed_level in UserProfile.LEVEL_OF_EDUCATION_CHOICES:
+                <option value="${code}">${_(ed_level)}</option>
+                %endfor
+              </select>
+            </div>
+          </li>
+          % endif
+          % if settings.REGISTRATION_EXTRA_FIELDS['gender'] != 'hidden':
+          <li class="field-group">
+            <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['gender']} select" id="field-gender">
+              <label for="gender">${_("Gender")}</label>
+              <select id="gender" name="gender" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['gender'] == 'required' else ''}>
+                <option value="">--</option>
+                %for code, gender in UserProfile.GENDER_CHOICES:
+                <option value="${code}">${_(gender)}</option>
+                %endfor
+              </select>
+            </div>
+          </li>
+          % endif
+          % if settings.REGISTRATION_EXTRA_FIELDS['year_of_birth'] != 'hidden':
+          <li class="field-group">
+            <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['year_of_birth']} select" id="field-yob">
+              <label for="yob">${_("Year of Birth")}</label>
+              <select id="yob" name="year_of_birth" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['year_of_birth'] == 'required' else ''}>
+                <option value="">--</option>
+                %for year in UserProfile.VALID_YEARS:
+                <option value="${year}">${year}</option>
+                %endfor
+              </select>
+            </div>
+            % endif
+          </li>
+        </ol>
       </div>
-      <article id="stanford-OpenEdX-contact">
-        <h2>${_('Technical Support, Suggestions, and Platform Bugs')}</h2>
-        <p><strong>${_('For Technical Support, to make suggestions or to report platform bugs:')}</strong><br />
-        ${_('Use the "Help" tab at the top left of the page.')}</p>
 
-        <p>&nbsp;</p>
-        <h2>${_('Additional Contact Information')}</h2>
-        <p><strong>${_('For general information email us at:')}</strong><br />
-        <a href="mailto:contact@class.stanford.edu">contact@class.stanford.edu</a></p>
+      <div class="group group-form group-form-personalinformation2">
+        <h2 class="sr">${_("Extra Personal Information")}</h2>
 
-        <p><strong>${_('For copyright concerns email us at:')}</strong><br />
-        <a href="mailto:copyright@class.stanford.edu">copyright@class.stanford.edu</a></p>
+        <ol class="list-input">
+          % if settings.REGISTRATION_EXTRA_FIELDS['mailing_address'] != 'hidden':
+          <li class="field ${settings.REGISTRATION_EXTRA_FIELDS['mailing_address']} text" id="field-address-mailing">
+            <label for="address-mailing">${_("Mailing Address")}</label>
+            <textarea id="address-mailing" name="mailing_address" value="" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['mailing_address'] == 'required' else ''}></textarea>
+          </li>
+          % endif
 
-        <p><strong>${_('For disability-related questions email us at:')}</strong><br />
-        <a href="mailto:accessibility@class.stanford.edu">accessibility@class.stanford.edu</a></p>
+          % if settings.REGISTRATION_EXTRA_FIELDS['goals'] != 'hidden':
+          <li class="field ${settings.REGISTRATION_EXTRA_FIELDS['goals']} text" id="field-goals">
+            <label for="goals">${_("Please share with us your reasons for registering with {platform_name}").format(platform_name=platform_name)}</label>
+            <textarea id="goals" name="goals" value="" ${'required aria-required="true"' if settings.REGISTRATION_EXTRA_FIELDS['goals'] == 'required' else ''}></textarea>
+          </li>
+          % endif
+        </ol>
+      </div>
 
-        <p><strong>${_('For questions about privacy-related issues email us at:')}</strong><br />
-        <a href="mailto:privacy@class.stanford.edu">privacy@class.stanford.edu</a></p>
+      <div class="group group-form group-form-accountacknowledgements">
+        <h2 class="sr">${_("Account Acknowledgements")}</h2>
 
-        <p>&nbsp;</p>
-        <h2>${_('Contact {Coursera}').format(Coursera="Coursera")}</h2>
-        <p><strong>${_('{Coursera} Student Support Center:').format(Coursera="Coursera")}</strong><br />
-        <a href="http://help.coursera.org/" class="external">http://help.coursera.org/</a></p>
-        
-        <p>&nbsp;</p>
-        <h2>${_('Contact {NovoEd}').format(NovoEd="NovoEd")}</h2>
-        <p><strong>${_('{NovoEd} Support Center:').format(NovoEd="NovoEd")}</strong><br />
-        <a href="mailto:support@novoed.com" class="external">support@novoed.com</a></p>
-      </article>
-      <script>
-        $(function() {
-          var ua = navigator.userAgent;
-          
-          $('#stanford-OpenEdX-contact a').each(function() {
-            var href = $(this).attr('href') + "?body=User Agent String: " + ua + " (${_('Please do not delete, this text helps us help you. - {platform_name} Team').format(platform_name='Stanford OpenEdX')})";
-            if (!$(this).hasClass('external')) {
-              $(this).attr('href', href);
-            }
-          });
-        });
-      </script>
-      <hr class="fade-right-hr-divider">
-    </section>
+        <ol class="list-input">
+          <li class="field-group">
+
+            % if has_extauth_info is UNDEFINED or ask_for_tos :
+            <div class="field required checkbox" id="field-tos">
+              <input id="tos-yes" type="checkbox" name="terms_of_service" value="true" required aria-required="true" />
+              <label for="tos-yes">${_('I agree to the {link_start}Terms of Service{link_end}').format(
+                link_start='<a href="{url}" class="new-vp" tabindex="-1">'.format(url=marketing_link('TOS')),
+                link_end='</a>')}</label>
+            </div>
+            % endif
+
+            % if settings.REGISTRATION_EXTRA_FIELDS['honor_code'] != 'hidden':
+            <div class="field ${settings.REGISTRATION_EXTRA_FIELDS['honor_code']} checkbox" id="field-honorcode">
+              <input id="honorcode-yes" type="checkbox" name="honor_code" value="true" />
+              <%
+                ## TODO: provide a better way to override these links
+                if self.stanford_theme_enabled():
+                  honor_code_path = marketing_link('TOS') + "#honor"
+                else:
+                  honor_code_path = marketing_link('HONOR')
+              %>
+              <label for="honorcode-yes">${_('I agree to the {link_start}Honor Code{link_end}').format(
+                link_start='<a href="{url}" class="new-vp" tabindex="-1">'.format(url=honor_code_path),
+                link_end='</a>')}</label>
+            </div>
+            % endif
+          </li>
+        </ol>
+      </div>
+
+% if course_id and enrollment_action:
+      <input type="hidden" name="enrollment_action" value="${enrollment_action | h}" />
+      <input type="hidden" name="course_id" value="${course_id | h}" />
+% endif
+
+      <div class="form-actions">
+        <button name="submit" type="submit" id="submit" class="action action-primary action-update">${_('Register')} <span class="orn-plus">+</span> ${_('Create My Account')}</button>
+      </div>
+    </form>
   </section>
 
+  <aside role="complementary">
+
+<%
+  # allow for microsite overrides on the registration sidebars, otherwise default to pre-existing ones
+  sidebar_file = microsite.get_template_path('register-sidebar.html')
+%>
+
+    <%include file="${sidebar_file}" />
+
+  </aside>
 </section>
