@@ -75,11 +75,11 @@
             <ul class="courses-listing">
             %for course in courses:
               <!--<li>Students registered: ${%1000 + {{counter}} %}</li>-->
-              <li>Students registered: {{ 1000 + counter }}</li>
+              <!--<li>Students registered: {{ 1000 + counter }}</li>-->
               <li>{{counter}}</li>
               <li>${counter}</li>
               <!--<li>${{ counter|add:counter }}</li>-->
-               <li>${ counter|add:counter }</li>
+               <!--<li>${ counter|add:counter }</li>-->
               <li class="courses-listing-item">
                 <%include file="course.html" args="course=course" />
               </li>
