@@ -74,8 +74,9 @@
         <section class="courses">
             <ul class="courses-listing">
             %for course in courses:
-              <li>Students registered: {{counter}}</li>
-              <h1>course {platform_name}</h1>
+              <li>Students registered: %1000 + {{counter}} %</li>
+              <li>Students registered: %1000 + counter %</li>
+              
               <li class="courses-listing-item">
                 <%include file="course.html" args="course=course" />
               </li>
