@@ -1,9 +1,13 @@
-## mako
-<%! from django.core.urlresolvers import reverse %>
-<%namespace name='static' file='/static_content.html'/>
-<%inherit file="/navigation.html"/>
+<%!
+  from django.core.urlresolvers import reverse
+  from django.utils.translation import ugettext as _
+%>
+<%inherit file="/main.html" />
 
-## TODO: this will eventually be moved to the Sass
-<%block name="navigation_logo">
-  <img src="${static.url('themes/stanford/images/bdulogo2.png')}" height="50" alt="Home Page" />
-</%block>
+<%namespace name='static' file='/static_content.html'/>
+
+<%block name="title"><title>${_('Terms of Service')}</title></%block>
+
+<h1>TEST test</h1>
+
+<p>News blog</p>
