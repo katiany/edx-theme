@@ -5,7 +5,11 @@
 %>
 <%namespace name='static' file='/static_content.html'/>
 <%inherit file="/navigation.html"/>
-<%inherit file="main.html" />
+
+
+<%namespace name='static' file='static_content.html'/>
+
+<%! from microsite_configuration import microsite %>
 
 ## Toss the Stanford brand bar on top of the page
 <%block name="navigation_top">
