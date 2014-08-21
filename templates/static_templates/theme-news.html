@@ -1,15 +1,17 @@
-<%!
-  from django.core.urlresolvers import reverse
-  from django.utils.translation import ugettext as _
+<%! from django.utils.translation import ugettext as _ %>
+
+<%! from django.core.urlresolvers import reverse %>
+<%inherit file="main.html" />
+<%namespace name='static' file='static_content.html'/>
+
+<%! from microsite_configuration import microsite %>
+
+<%
+  homepage_overlay_html = microsite.get_value('homepage_overlay_html')
+
+  show_homepage_promo_video = microsite.get_value('show_homepage_promo_video', False)
+  homepage_promo_video_youtube_id = microsite.get_value('homepage_promo_video_youtube_id', "XNaiOGxWeto")
+
+  show_partners = microsite.get_value('show_partners', True)
+
 %>
-<%inherit file="/main.html" />
-
-<%namespace name='static' file='/static_content.html'/>
-
-<%block name="title"><title>${_('Terms of Service')}</title></%block>
-
-<h1>TEST test</h1>
-
-<p>News blog</p>
-
-<p>${_('Good Morning')}</p>
