@@ -129,7 +129,8 @@
 
 $.get( "http://192.155.229.124/counter", function( data ) {
     console.log(data);
-    $('.counter-message').html("<p style = 'color:#FFFFFF'>Junte-se aos <tag style = 'color:#96c765'>"data"</tag> alunos e faça sua carreira crescer! </p>")
+    
+    $('.counter-message').html(data)
     
 });
   
