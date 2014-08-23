@@ -126,11 +126,11 @@
 </body>
 
 <script>
-
+alert("BUTTON TESTING");
 $.get( "http://192.155.229.124/counter", function( data ) {
     console.log(data);
-    
-    $('.counter-message').html(data)
+    alert(data);    
+    $('.counter-message').html(data);
     
 });
   
