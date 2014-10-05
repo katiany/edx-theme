@@ -2350,20 +2350,37 @@ if (typeof Object.create !== "function") {
 
 
   <h1 style = "color:#3D5E2C"> Cursos em Destaque </h1>
+  <section class="container">
+    <section class="highlighted-courses">
+       % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+        <section class="courses"> 
 
     <div style="padding: 40px;">
-      <div id="owl-demo2" class="owl-carousel owl-theme">
-
+      <div id="owl-demo2" class="owl-carousel owl-theme courses-listing">
             %for course in courses:
-                <div class="item">
+                <div class="item courses-listing-item">
                   <%include file="course.html" args="course=course" />
                 </div>
             %endfor
-
-
-
       </div>
     </div>
+
+
+
+
+
+        </section>
+      % endif
+    </section>
+  </section>
+
+
+
+
+
+
+
+
 
 
 <!--  <section class = "container"> -->
