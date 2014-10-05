@@ -2356,9 +2356,9 @@ if (typeof Object.create !== "function") {
         <section class="courses"> 
 
     <div style="padding: 40px;">
-      <div id="owl-demo2" class="owl-carousel owl-theme courses-listing">
+      <div id="owl-demo2" class="owl-carousel owl-theme">
             %for course in courses:
-                <div class="item courses-listing-item">
+                <div class="item">
                   <%include file="course.html" args="course=course" />
                 </div>
             %endfor
