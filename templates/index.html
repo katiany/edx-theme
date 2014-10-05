@@ -1,240 +1,3 @@
-<%! from django.utils.translation import ugettext as _ %>
-
-<%! from django.core.urlresolvers import reverse %>
-<%inherit file="main.html" />
-<%namespace name='static' file='static_content.html'/>
-
-<%! from microsite_configuration import microsite %>
-
-<%
-  homepage_overlay_html = microsite.get_value('homepage_overlay_html')
-
-  show_homepage_promo_video = microsite.get_value('show_homepage_promo_video', False)
-  homepage_promo_video_youtube_id = microsite.get_value('homepage_promo_video_youtube_id', "XNaiOGxWeto")
-
-  show_partners = microsite.get_value('show_partners', True)
-
-%>
-
-<section class="home">
-  <header>
-    <div class="outer-wrapper">
-      <div class="title" style="margin-left: 15%; width: 70%">
-        <hgroup>
-          % if homepage_overlay_html:
-            ${homepage_overlay_html}
-          % else:
-            % if self.stanford_theme_enabled():
-	    <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
-	    <br>
-	    <h2>Contando com <strong><span style="color: red" 109324 </span></strong> alunos!</h2>
-            % else:
-              <h2>${_("The Future of Online Education")}</h3>
-            % endif
-          % endif
-        </hgroup>
-
-        ## Disable social buttons for non-edX sites
-        % if not self.theme_enabled():
-          <section class="actions">
-            <div class="main-cta">
-              <a href="#signup-modal" id="signup_action" class="find-courses" rel="leanModal">${_("Sign Up")}</a>
-            </div>
-
-            <div class="secondary-actions">
-              <div class="social-sharing">
-                <div class="sharing-message">${_("Stay up to date with all {platform_name} has to offer!").format(platform_name=settings.PLATFORM_NAME)}</div>
-                <a href="https://twitter.com/edXOnline" class="share">
-                  <img src="${static.url('images/social/twitter-sharing.png')}">
-                </a>
-                <a href="http://www.facebook.com/EdxOnline" class="share">
-                  <img src="${static.url('images/social/facebook-sharing.png')}">
-                </a>
-                <a href="https://plus.google.com/108235383044095082735/posts" class="share">
-                  <img src="${static.url('images/social/google-plus-sharing.png')}">
-                </a>
-              </div>
-            </div>
-          </section>
-          % endif
-      </div>
-
-      % if show_homepage_promo_video:
-        <a href="#video-modal" class="media" rel="leanModal">
-          <div class="hero">
-            <div class="play-intro"></div>
-          </div>
-        </a>
-      % endif
-    </div>
-  </header>
-  
-<!-- GUILHERME STARTS HERE -- TODO MOVE SOME SCRIPTS TO ANOHTER FILE -->  
-<!--
-  <script src="${static.url('http://code.jquery.com/jquery-1.9.1.js')}"></script>
-  <link rel="stylesheet" href="${static.url('https://raw.githubusercontent.com/OwlFonk/OwlCarousel2/develop/src/css/owl.carousel.css')}" />
-  <link rel="stylesheet" href="${static.url('https://raw.githubusercontent.com/OwlFonk/OwlCarousel2/develop/src/css/owl.theme.default.css')}" />
---> 
-
-
-  <h1 style = "color:#3D5E2C"> Cursos em Destaque </h1>
-
-    <div style="padding: 40px;">
-      <div id="owl-demo2" class="owl-carousel owl-theme">
-
-            %for course in courses:
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-            %endfor
-
-
-
-      </div>
-    </div>
-
-
-<!--  <section class = "container"> -->
-  <h1 style = "color:#3D5E2C"> Mapas Curriculares </h1>
-
-    <div style="padding: 40px;">
-      <div id="cm" class="owl-carousel owl-theme">
-
-            <div class="item"><h1>Big Data Concepts</h1></div>
-            <div class="item"><h1>Real-Time Analytics</h1></div>
-            <div class="item"><h1>Relational Databases</h1></div>
-            <div class="item"><h1>Hadoop Core</h1></div>
-            <div class="item"><h1>Data Analytics</h1></div>
-            <div class="item"><h1>Sponsored Onsite Events</h1></div>
-            <div class="item"><h1>Miscellaneous</h1></div>
-            <div class="item"><h1>In Other Languages</h1></div>
-
-
-      </div>
-    </div>
-
-<!--  </section> -->
-
-
-
-
-  <section class="container">
-    <section class="highlighted-courses">
-
-<!--
-      % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
-        <section class="courses">
-            <ul class="courses-listing">
-            %for course in courses[:3]:
-                <li class="courses-listing-item">
-                  <%include file="course.html" args="course=course" />
-                </li>
-            %endfor
-            </ul>
-        </section>
-      % endif
--->
-
-    </section> <!-- highlighted-courses -->
-  </section> <!-- container -->
-</section>
-
-<section id="video-modal" class="modal home-page-video-modal video-modal">
-  <div class="inner-wrapper">
-    <%
-      youtube_video_id = homepage_promo_video_youtube_id
-      if self.stanford_theme_enabled():
-        youtube_video_id = "2gmreZObCY4"
-    %>
-    <iframe width="640" height="360" src="//www.youtube.com/embed/${youtube_video_id}?showinfo=0" frameborder="0" allowfullscreen></iframe>
-  </div>
-</section>
-
-<%block name="js_extra">
-   <script type="text/javascript">
-      $(window).load(function() {
-         if(getParameterByName('next')) {
-              $('#login').trigger("click");
-         }
-      })
-   </script>
-</%block>
-
-% if show_signup_immediately is not UNDEFINED:
-  ## NOTE: This won't work in production, because anonymous views are cached, so it will
-  ## show either with or without this extra js for 3 minutes at a time.
-<script type="text/javascript">
-  $(window).load(function() {$('#signup_action').trigger("click");});
-</script>
-% endif
-
-
-<!-- script tha is on the page -->
-<script type = "text/javascript">
-    $(document).ready(function() {
-    //   $("#owl-demo").owlCarousel({
-
-    //   navigation : false,
-    //   // navigation : true,
-    //   slideSpeed : 300,
-    //   paginationSpeed : 400,
-    //   singleItem : true
-
-    //   // "singleItem:true" is a shortcut for:
-    //   // items : 1, 
-    //   // itemsDesktop : false,
-    //   // itemsDesktopSmall : false,
-    //   // itemsTablet: false,
-    //   // itemsMobile : false
-
-
-    //   });
-
-        var owl = $("#owl-demo2");
-        var cm = $("#cm");
-        
-        cm.owlCarousel({
-            navigation:true,
-            navigationText: [
-              "<i class='icon-chevron-left icon-white'><</i>",
-              "<i class='icon-chevron-right icon-white'>></i>"
-                  ],
-            items : 3, //10 items above 1000px browser width
-            itemsDesktop : [1000,3], //5 items between 1000px and 901px
-            itemsDesktopSmall : [900,3], // betweem 900px and 601px
-            itemsTablet: [600,2], //2 items between 600 and 0
-            itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
-        });
-
-        owl.owlCarousel({
-            navigation:true,
-            navigationText: [
-              "<i class='icon-chevron-left icon-white'><</i>",
-              "<i class='icon-chevron-right icon-white'>></i>"
-                  ],
-            items : 3, //10 items above 1000px browser width
-            itemsDesktop : [1000,3], //5 items between 1000px and 901px
-            itemsDesktopSmall : [900,3], // betweem 900px and 601px
-            itemsTablet: [600,2], //2 items between 600 and 0
-            itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
-        });
-        // // Custom Navigation Events
-        //   $(".next").click(function(){
-        //     owl.trigger('owl.next');
-        //   })
-        //   $(".prev").click(function(){
-        //     owl.trigger('owl.prev');
-        //   })
-        //   $(".play").click(function(){
-        //     owl.trigger('owl.play',1000); //owl.play event accept autoPlay speed as second parameter
-        //   })
-        //   $(".stop").click(function(){
-        //     owl.trigger('owl.stop');
-        //   })
-  
-    });
-    </script>
-<!-- owl.theme -->
 <style>
 /*
 /*
@@ -317,57 +80,7 @@
   background: url(AjaxLoader.gif) no-repeat center center
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- owl.carousel -->
 <style>
-
 
 /* 
 /* 
@@ -446,58 +159,6 @@
 
 
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- carousel css (Custom)-->
 <style>
 /* Owl Carousel Bootstrap Custom CSS */
 /* Owl Carousel Bootstrap Custom CSS */
@@ -1026,6 +687,245 @@ NO MORE TABLES!! ;)
 
 
 </style>
+
+
+<%! from django.utils.translation import ugettext as _ %>
+
+<%! from django.core.urlresolvers import reverse %>
+<%inherit file="main.html" />
+<%namespace name='static' file='static_content.html'/>
+
+<%! from microsite_configuration import microsite %>
+
+<%
+  homepage_overlay_html = microsite.get_value('homepage_overlay_html')
+
+  show_homepage_promo_video = microsite.get_value('show_homepage_promo_video', False)
+  homepage_promo_video_youtube_id = microsite.get_value('homepage_promo_video_youtube_id', "XNaiOGxWeto")
+
+  show_partners = microsite.get_value('show_partners', True)
+
+%>
+
+<section class="home">
+  <header>
+    <div class="outer-wrapper">
+      <div class="title" style="margin-left: 15%; width: 70%">
+        <hgroup>
+          % if homepage_overlay_html:
+            ${homepage_overlay_html}
+          % else:
+            % if self.stanford_theme_enabled():
+	    <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
+	    <br>
+	    <h2>Contando com <strong><span style="color: red" 109324 </span></strong> alunos!</h2>
+            % else:
+              <h2>${_("The Future of Online Education")}</h3>
+            % endif
+          % endif
+        </hgroup>
+
+        ## Disable social buttons for non-edX sites
+        % if not self.theme_enabled():
+          <section class="actions">
+            <div class="main-cta">
+              <a href="#signup-modal" id="signup_action" class="find-courses" rel="leanModal">${_("Sign Up")}</a>
+            </div>
+
+            <div class="secondary-actions">
+              <div class="social-sharing">
+                <div class="sharing-message">${_("Stay up to date with all {platform_name} has to offer!").format(platform_name=settings.PLATFORM_NAME)}</div>
+                <a href="https://twitter.com/edXOnline" class="share">
+                  <img src="${static.url('images/social/twitter-sharing.png')}">
+                </a>
+                <a href="http://www.facebook.com/EdxOnline" class="share">
+                  <img src="${static.url('images/social/facebook-sharing.png')}">
+                </a>
+                <a href="https://plus.google.com/108235383044095082735/posts" class="share">
+                  <img src="${static.url('images/social/google-plus-sharing.png')}">
+                </a>
+              </div>
+            </div>
+          </section>
+          % endif
+      </div>
+
+      % if show_homepage_promo_video:
+        <a href="#video-modal" class="media" rel="leanModal">
+          <div class="hero">
+            <div class="play-intro"></div>
+          </div>
+        </a>
+      % endif
+    </div>
+  </header>
+  
+<!-- GUILHERME STARTS HERE -- TODO MOVE SOME SCRIPTS TO ANOHTER FILE -->  
+<!--
+  <script src="${static.url('http://code.jquery.com/jquery-1.9.1.js')}"></script>
+  <link rel="stylesheet" href="${static.url('https://raw.githubusercontent.com/OwlFonk/OwlCarousel2/develop/src/css/owl.carousel.css')}" />
+  <link rel="stylesheet" href="${static.url('https://raw.githubusercontent.com/OwlFonk/OwlCarousel2/develop/src/css/owl.theme.default.css')}" />
+--> 
+
+
+  <h1 style = "color:#3D5E2C"> Cursos em Destaque </h1>
+
+    <div style="padding: 40px;">
+      <div id="owl-demo2" class="owl-carousel owl-theme">
+
+            %for course in courses:
+                <div class="item">
+                  <%include file="course.html" args="course=course" />
+                </div>
+            %endfor
+
+
+
+      </div>
+    </div>
+
+
+<!--  <section class = "container"> -->
+  <h1 style = "color:#3D5E2C"> Mapas Curriculares </h1>
+
+    <div style="padding: 40px;">
+      <div id="cm" class="owl-carousel owl-theme">
+
+            <div class="item"><h1>Big Data Concepts</h1></div>
+            <div class="item"><h1>Real-Time Analytics</h1></div>
+            <div class="item"><h1>Relational Databases</h1></div>
+            <div class="item"><h1>Hadoop Core</h1></div>
+            <div class="item"><h1>Data Analytics</h1></div>
+            <div class="item"><h1>Sponsored Onsite Events</h1></div>
+            <div class="item"><h1>Miscellaneous</h1></div>
+            <div class="item"><h1>In Other Languages</h1></div>
+
+
+      </div>
+    </div>
+
+<!--  </section> -->
+
+
+
+
+  <section class="container">
+    <section class="highlighted-courses">
+
+<!--
+      % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
+        <section class="courses">
+            <ul class="courses-listing">
+            %for course in courses[:3]:
+                <li class="courses-listing-item">
+                  <%include file="course.html" args="course=course" />
+                </li>
+            %endfor
+            </ul>
+        </section>
+      % endif
+-->
+
+    </section> <!-- highlighted-courses -->
+  </section> <!-- container -->
+</section>
+
+<section id="video-modal" class="modal home-page-video-modal video-modal">
+  <div class="inner-wrapper">
+    <%
+      youtube_video_id = homepage_promo_video_youtube_id
+      if self.stanford_theme_enabled():
+        youtube_video_id = "2gmreZObCY4"
+    %>
+    <iframe width="640" height="360" src="//www.youtube.com/embed/${youtube_video_id}?showinfo=0" frameborder="0" allowfullscreen></iframe>
+  </div>
+</section>
+
+<%block name="js_extra">
+   <script type="text/javascript">
+      $(window).load(function() {
+         if(getParameterByName('next')) {
+              $('#login').trigger("click");
+         }
+      })
+   </script>
+</%block>
+
+% if show_signup_immediately is not UNDEFINED:
+  ## NOTE: This won't work in production, because anonymous views are cached, so it will
+  ## show either with or without this extra js for 3 minutes at a time.
+<script type="text/javascript">
+  $(window).load(function() {$('#signup_action').trigger("click");});
+</script>
+% endif
+
+
+<!-- script tha is on the page -->
+<script type = "text/javascript">
+    $(document).ready(function() {
+    //   $("#owl-demo").owlCarousel({
+
+    //   navigation : false,
+    //   // navigation : true,
+    //   slideSpeed : 300,
+    //   paginationSpeed : 400,
+    //   singleItem : true
+
+    //   // "singleItem:true" is a shortcut for:
+    //   // items : 1, 
+    //   // itemsDesktop : false,
+    //   // itemsDesktopSmall : false,
+    //   // itemsTablet: false,
+    //   // itemsMobile : false
+
+
+    //   });
+
+        var owl = $("#owl-demo2");
+        var cm = $("#cm");
+        
+        cm.owlCarousel({
+            navigation:true,
+            navigationText: [
+              "<i class='icon-chevron-left icon-white'><</i>",
+              "<i class='icon-chevron-right icon-white'>></i>"
+                  ],
+            items : 3, //10 items above 1000px browser width
+            itemsDesktop : [1000,3], //5 items between 1000px and 901px
+            itemsDesktopSmall : [900,3], // betweem 900px and 601px
+            itemsTablet: [600,2], //2 items between 600 and 0
+            itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+        });
+
+        owl.owlCarousel({
+            navigation:true,
+            navigationText: [
+              "<i class='icon-chevron-left icon-white'><</i>",
+              "<i class='icon-chevron-right icon-white'>></i>"
+                  ],
+            items : 3, //10 items above 1000px browser width
+            itemsDesktop : [1000,3], //5 items between 1000px and 901px
+            itemsDesktopSmall : [900,3], // betweem 900px and 601px
+            itemsTablet: [600,2], //2 items between 600 and 0
+            itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+        });
+        // // Custom Navigation Events
+        //   $(".next").click(function(){
+        //     owl.trigger('owl.next');
+        //   })
+        //   $(".prev").click(function(){
+        //     owl.trigger('owl.prev');
+        //   })
+        //   $(".play").click(function(){
+        //     owl.trigger('owl.play',1000); //owl.play event accept autoPlay speed as second parameter
+        //   })
+        //   $(".stop").click(function(){
+        //     owl.trigger('owl.stop');
+        //   })
+  
+    });
+    </script>
+
 
 
 
