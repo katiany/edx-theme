@@ -2305,47 +2305,28 @@ if (typeof Object.create !== "function") {
 
 <section class="home">
       <div id="slides" class="owl-carousel owl-theme">
-      <div class="item home">
-        
-        <header>
-                <div class="outer-wrapper">
-                <div class="title" style="margin-left: 15%; width: 70%">
-                  <hgroup>
-                   <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
-                   <br>
-                   <h2>Contando com <strong><span style="color: red"> 109324 </span></strong> alunos!</h2>
-                  </hgroup>
-               </div>
-               </div> </header>
-        
-        
-      </div>
+            <div class="item home">
+              
+              <header>
+                      <div class="outer-wrapper">
+                      <div class="title" style="margin-left: 15%; width: 70%">
+                        <hgroup>
+                         <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
+                         <br>
+                         <h2>Contando com <strong><span style="color: red"> 109324 </span></strong> alunos!</h2>
+                        </hgroup>
+                     </div>
+                     </div>
+              </header>
+              
+              
+            </div>
             <div class="item"><img src="http://www.ox.ac.uk/sites/files/oxford/styles/ow_large_feature/public/field/field_image_main/Computer-Science-and-Philosophy.jpg?itok=Mtsi75k" /></div>
             <div class="item"><img src="http://www.suzanismail.com.br/wp-content/uploads/2013/12/praia-88411.jpg" /></div>
             <div class="item"><img src="http://wallpaper.ultradownloads.com.br/114486_Papel-de-Parede-Praia--114486_1600x1200.jpg" /></div>
-            <div class="item"><img src="http://upload.wikimedia.org/wikipedia/commons/f/f6/Praia_de_Areia_Preta.jpg" /></div>
-            <div class="item"><img src="http://ds-lands.com/data_images/top_cityes/praia/praia-04.jpg" /></div>
-
-
       </div>
   
 
- 
-           <section class="actions">
-            <div class="secondary-actions">
-              <div class="social-sharing">
-                <a href="https://twitter.com/edXOnline" class="share">
-                  <img src="${static.url('images/social/twitter-sharing.png')}">
-                </a>
-                <a href="http://www.facebook.com/EdxOnline" class="share">
-                  <img src="${static.url('images/social/facebook-sharing.png')}">
-                </a>
-                <a href="https://plus.google.com/108235383044095082735/posts" class="share">
-                  <img src="${static.url('images/social/google-plus-sharing.png')}">
-                </a>
-              </div>
-            </div>
-          </section> 
 <!-- GUILHERME STARTS HERE -- TODO MOVE SOME SCRIPTS TO ANOHTER FILE -->  
 <!--
   <script src="${static.url('http://code.jquery.com/jquery-1.9.1.js')}"></script>
@@ -2360,53 +2341,38 @@ if (typeof Object.create !== "function") {
        % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
         <section class="courses"> 
 
-    <div style="padding: 40px;">
-      <div id="owl-demo2" class="owl-carousel owl-theme">
-            %for course in courses:
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-                <div class="item">
-                  <%include file="course.html" args="course=course" />
-                </div>
-            %endfor
-      </div>
-    </div>
-
-
-
-
-
+                  <div style="padding: 40px;">
+                    <div id="owl-demo2" class="owl-carousel owl-theme">
+                          %for course in courses:
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                              <div class="item">
+                                <%include file="course.html" args="course=course" />
+                              </div>
+                          %endfor
+                    </div>
+                  </div>
         </section>
       % endif
     </section>
   </section>
 
-
-
-
-
-
-
-
-
-
-<!--  <section class = "container"> -->
   <h1 style = "color:#3D5E2C"> Mapas Curriculares </h1>
 
     <div style="padding: 40px;">
@@ -2424,43 +2390,6 @@ if (typeof Object.create !== "function") {
 
       </div>
     </div>
-
-<!--  </section> -->
-
-
-
-
-  <section class="container">
-    <section class="highlighted-courses">
-
-<!--
-      % if settings.FEATURES.get('COURSES_ARE_BROWSABLE'):
-        <section class="courses">
-            <ul class="courses-listing">
-            %for course in courses[:3]:
-                <li class="courses-listing-item">
-                  <%include file="course.html" args="course=course" />
-                </li>
-            %endfor
-            </ul>
-        </section>
-      % endif
--->
-
-    </section> <!-- highlighted-courses -->
-  </section> <!-- container -->
-</section>
-
-<section id="video-modal" class="modal home-page-video-modal video-modal">
-  <div class="inner-wrapper">
-    <%
-      youtube_video_id = homepage_promo_video_youtube_id
-      if self.stanford_theme_enabled():
-        youtube_video_id = "2gmreZObCY4"
-    %>
-    <iframe width="640" height="360" src="//www.youtube.com/embed/${youtube_video_id}?showinfo=0" frameborder="0" allowfullscreen></iframe>
-  </div>
-</section>
 
 <%block name="js_extra">
    <script type="text/javascript">
