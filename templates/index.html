@@ -215,27 +215,28 @@
   text-align: center;
 }
 
-#carousel{
-  /*height: 200px;*/
+#slides .item img{
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
-/*
-#owl-demo2 .item{
-  background: #3fbf79;
-  padding: 30px 0px;
-  margin: 10px;
-  color: #FFF;
+#slides .item{
+  display: block;
+  width: 100%;
+  height: 300px;
+  padding: 0;
+  margin: 0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   text-align: center;
 }
 
-*/
 .customNavigation{
   text-align: center;
 }
-//use styles below to disable ugly selection
+/*use styles below to disable ugly selection*/
 .customNavigation a{
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -2227,6 +2228,7 @@ if (typeof Object.create !== "function") {
 
         var owl = $("#owl-demo2");
         var cm = $("#cm");
+        var slides = $("#slides");
         
         cm.owlCarousel({
             navigation:true,
@@ -2251,6 +2253,18 @@ if (typeof Object.create !== "function") {
             itemsDesktop : [1000,3], //5 items between 1000px and 901px
             itemsDesktopSmall : [900,3], // betweem 900px and 601px
             itemsTablet: [600,2], //2 items between 600 and 0
+            itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+        });
+        slides.owlCarousel({
+            navigation:true,
+            navigationText: [
+              "<i class='icon-chevron-left icon-white'><</i>",
+              "<i class='icon-chevron-right icon-white'>></i>"
+                  ],
+            items : 1, //10 items above 1000px browser width
+            itemsDesktop : [1000,1], //5 items between 1000px and 901px
+            itemsDesktopSmall : [900,1], // betweem 900px and 601px
+            itemsTablet: [600,1], //2 items between 600 and 0
             itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
         });
         // // Custom Navigation Events
@@ -2287,6 +2301,16 @@ if (typeof Object.create !== "function") {
   show_partners = microsite.get_value('show_partners', True)
 
 %>
+      <div id="slides" class="owl-carousel owl-theme">
+
+            <div class="item"><img src="http://www.ox.ac.uk/sites/files/oxford/styles/ow_large_feature/public/field/field_image_main/Computer-Science-and-Philosophy.jpg?itok=Mtsi75k" /></div>
+            <div class="item"><img src="http://www.suzanismail.com.br/wp-content/uploads/2013/12/praia-88411.jpg" /></div>
+            <div class="item"><img src="http://wallpaper.ultradownloads.com.br/114486_Papel-de-Parede-Praia--114486_1600x1200.jpg" /></div>
+            <div class="item"><img src="http://upload.wikimedia.org/wikipedia/commons/f/f6/Praia_de_Areia_Preta.jpg" /></div>
+            <div class="item"><img src="http://ds-lands.com/data_images/top_cityes/praia/praia-04.jpg" /></div>
+
+
+      </div>
 
 <section class="home">
   <header>
