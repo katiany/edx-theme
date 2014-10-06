@@ -4,7 +4,14 @@
   from django.utils.translation import ugettext as _
   from edxmako.shortcuts import marketing_link
 %>
+<style type="text/css">
+	#socialnetworks{
+			list-style-type: none;
+		    padding: 0px;
+    		margin: 0px;
+	}
 
+</style>
 
 
 <div id="su-footer">
@@ -26,7 +33,12 @@
 
           <p style="color:#FFFFFF;">&copy; Big Data University</span></p>
         </ul>
-        
+        <ul id="socialnetworks">
+        	<li><a href="http://facebook.com/bigdatauniversity"><img src="/static/themes/stanford/images/facebook1.png" width="38" height="38" alt="Facebook"></a></li>
+        	<li><a href="http://twitter.com/bigdatau"><img src="/static/themes/stanford/images/twitter.png" width="38" height="38" alt="Twitter"></a></li>
+        	<li><a href="http://www.youtube.com/user/TheBigDataUniversity"><img src="/static/themes/stanford/images/youtube.png" width="38" height="38" alt="Youtube"></a></li>
+        	<li><a href="http://www.linkedin.com/groups/BigData-University-4060416"><img src="/static/themes/stanford/images/linkedin.png" width="38" height="38" alt="LinkedIn"></a></li>
+        </ul>
 <br>
 
       </h1>
