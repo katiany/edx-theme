@@ -2302,7 +2302,17 @@ if (typeof Object.create !== "function") {
 
 %>
       <div id="slides" class="owl-carousel owl-theme">
-
+            <div class="item"> 
+                <div class="outer-wrapper">
+                <div class="title" style="margin-left: 15%; width: 70%">
+                  <hgroup>
+                   <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
+                   <br>
+                   <h2>Contando com <strong><span style="color: red"> 109324 </span></strong> alunos!</h2>
+                  </hgroup>
+               </div>
+               </div>
+            </div>
             <div class="item"><img src="http://www.ox.ac.uk/sites/files/oxford/styles/ow_large_feature/public/field/field_image_main/Computer-Science-and-Philosophy.jpg?itok=Mtsi75k" /></div>
             <div class="item"><img src="http://www.suzanismail.com.br/wp-content/uploads/2013/12/praia-88411.jpg" /></div>
             <div class="item"><img src="http://wallpaper.ultradownloads.com.br/114486_Papel-de-Parede-Praia--114486_1600x1200.jpg" /></div>
@@ -2314,25 +2324,9 @@ if (typeof Object.create !== "function") {
 
 <section class="home">
   <header>
-    <div class="outer-wrapper">
-      <div class="title" style="margin-left: 15%; width: 70%">
-        <hgroup>
-          % if homepage_overlay_html:
-            ${homepage_overlay_html}
-          % else:
-            % if self.stanford_theme_enabled():
-	    <h1 style='margin: 0px'>Cursos Gratuitos da <strong>Big Data University</strong></h1>
-	    <br>
-	    <h2>Contando com <strong><span style="color: red" 109324 </span></strong> alunos!</h2>
-            % else:
-              <h2>${_("The Future of Online Education")}</h3>
-            % endif
-          % endif
-        </hgroup>
 
-        ## Disable social buttons for non-edX sites
-        % if not self.theme_enabled():
-          <section class="actions">
+  </header>
+           <section class="actions">
             <div class="main-cta">
               <a href="#signup-modal" id="signup_action" class="find-courses" rel="leanModal">${_("Sign Up")}</a>
             </div>
@@ -2351,20 +2345,7 @@ if (typeof Object.create !== "function") {
                 </a>
               </div>
             </div>
-          </section>
-          % endif
-      </div>
-
-      % if show_homepage_promo_video:
-        <a href="#video-modal" class="media" rel="leanModal">
-          <div class="hero">
-            <div class="play-intro"></div>
-          </div>
-        </a>
-      % endif
-    </div>
-  </header>
-  
+          </section> 
 <!-- GUILHERME STARTS HERE -- TODO MOVE SOME SCRIPTS TO ANOHTER FILE -->  
 <!--
   <script src="${static.url('http://code.jquery.com/jquery-1.9.1.js')}"></script>
