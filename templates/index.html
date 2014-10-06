@@ -2301,6 +2301,9 @@ if (typeof Object.create !== "function") {
   show_partners = microsite.get_value('show_partners', True)
 
 %>
+
+
+<section class="home">
       <div id="slides" class="owl-carousel owl-theme">
             <div class="item"> 
                 <div class="outer-wrapper">
@@ -2321,19 +2324,12 @@ if (typeof Object.create !== "function") {
 
 
       </div>
-
-<section class="home">
   <header>
 
   </header>
            <section class="actions">
-            <div class="main-cta">
-              <a href="#signup-modal" id="signup_action" class="find-courses" rel="leanModal">${_("Sign Up")}</a>
-            </div>
-
             <div class="secondary-actions">
               <div class="social-sharing">
-                <div class="sharing-message">${_("Stay up to date with all {platform_name} has to offer!").format(platform_name=settings.PLATFORM_NAME)}</div>
                 <a href="https://twitter.com/edXOnline" class="share">
                   <img src="${static.url('images/social/twitter-sharing.png')}">
                 </a>
