@@ -16,6 +16,7 @@
           transition: all 0.15s linear 0s;
           width: 100%;
         }
+
 .curriculummap .course-preview {
     background-image: linear-gradient(-90deg, #fff, rgba(255, 255, 255, 0.85));
     border-bottom: 1px solid rgba(150, 150, 150, 0.7);
@@ -28,6 +29,81 @@
     width: 100%;
     z-index: 3;
 }
+
+.curriculummap .info {
+    background: none repeat scroll 0 0 #fbfbf9;
+    height: 350px;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    transition: all 0.15s linear 0s;
+    width: 100%;
+}
+.curriculummap .info .cover-image {
+    height: 200px;
+    overflow: hidden;
+    width: 100%;
+}
+.curriculummap .info .cover-image img {
+    display: block;
+    min-height: 100%;
+    width: 100%;
+}
+.curriculummap .info-link {
+    border-left: 1px solid rgba(150, 150, 150, 0.5);
+    box-sizing: border-box;
+    color: #2e2d29;
+    display: inline-block;
+    font: bold 1.6em/1.2em "Source Sans","Open Sans",Verdana,Geneva,sans-serif,sans-serif;
+    height: 100%;
+    opacity: 0.6;
+    padding-top: 10px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.6);
+    top: 0;
+    vertical-align: middle;
+    width: 60px;
+}
+
+.curriculummap .inner-wrapper {
+    border: 1px solid #fcfcfc;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.curriculummap hgroup {
+    left: 0;
+    padding: 0 10px;
+    position: absolute;
+    right: 60px;
+    top: 0;
+}
+
+.curriculummap hgroup h2 {
+    color: #2e2d29;
+    display: table-cell;
+    font-family: "Source Sans","Open Sans",Verdana,Geneva,sans-serif,sans-serif;
+    font-size: 0.8em;
+    font-weight: 700;
+    height: 48px;
+    letter-spacing: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.6);
+    text-transform: none;
+    vertical-align: middle;
+}
+
+.curriculummap hgroup h2 .course-number {
+    font-weight: 700;
+    text-transform: none;
+}
+
 </style>
 
 <style>
